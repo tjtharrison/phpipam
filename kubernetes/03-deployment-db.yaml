@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipam-database
+  namespace: ipam
+spec:
+  selector:
+    matchLabels:
+      app: ipam-database
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ipam-database
+    spec:
+      containers:
+      - name: ipam
+        imagePullPolicy: IfNotPresent
+        image: mariadb:10.4.13
+        ports:
+          - containerPort: 3306
+        volumeMounts:
+        - name: ipam-database
+          mountPath: /var/lib/mysql
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: ouKoh0quae9ahv0
+      volumes:
+      - name: ipam-database
+        persistentVolumeClaim:
+          claimName: "ipam-database"

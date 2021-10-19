@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipam
+  namespace: ipam
+spec:
+  selector:
+    matchLabels:
+      app: ipam
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ipam
+    spec:
+      containers:
+      - name: ipam
+        imagePullPolicy: IfNotPresent
+        image: phpipam/phpipam-www:latest
+        ports:
+          - containerPort: 80
+        env:
+          - name: TZ
+            value: Europe/London
+          - name: IPAM_DATABASE_HOST
+            value: ipam-database.ipam.svc.cluster.local
+          - name: IPAM_DATABASE_PASS
+            value: ouKoh0quae9ahv0
+          - name: IPAM_DATABASE_WEBHOST
+            value: "%"

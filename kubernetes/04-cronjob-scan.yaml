@@ -1,0 +1,26 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: ipam-cron
+  namespace: ipam
+spec:
+  schedule: "0 */2 * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: ipam-cron
+            image: phpipam/phpipam-cron:latest
+            env:
+              - name: TZ
+                value: Europe/London
+              - name: IPAM_DATABASE_HOST
+                value: mariadb.ipam.svc.cluster.local
+              - name: IPAM_DATABASE_PASS
+                value: ouKoh0quae9ahv0
+              - name: IPAM_DATABASE_WEBHOST
+                value: "%"
+          restartPolicy: OnFailure
